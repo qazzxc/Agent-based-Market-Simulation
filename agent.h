@@ -17,7 +17,10 @@ typedef struct Agent Agent;
 void
 refresh_price(Agent * agent)
 {
-  double dp = grand() / 2000 * agent->ask;
+  /*‚©‚¯Z‚ÉC³ 1‰ñ‚Å“®‚©‚·‚Ì‚ÍSpread‚ÌƒĞ1%‚Å³‹K—” 1% */
+  double dp = grand() * agent->spread * 0.01 ; 
+  /*‚©‚¯Z‚ÉC³ 1‰ñ‚Å“®‚©‚·‚Ì‚Íask‚ÌƒĞ0.05%‚Å³‹K—” 
+  double dp = grand() * agent->bid * 0.0005 ;*/
   agent->ask += dp;
   agent->bid += dp;
 }
@@ -25,15 +28,22 @@ refresh_price(Agent * agent)
 void
 set_price(Agent * agent, double price)
 {
-  agent->ask = price + agent->spread / 2;
-  agent->bid = price - agent->spread / 2;
+  /* ‰Â•ÏƒXƒvƒŒƒbƒhVer Spread 1% ‚»‚Ì•Ï“®‚Í‚»‚Ì10% 
+  agent->spread = price * ( 0.01 + (0.01*0.1*grand()));
+  */
+  /* Spread 1% 
+  agent->spread = price * ( 0.01 );
+  */
+  agent->ask = price + agent->spread * 0.5;
+  agent->bid = price - agent->spread * 0.5;
+
 }
 
 void
 init_agent(Agent * agent)
 {
   agent->ask = 100;
-  agent->spread = agent->ask / 100;
+  agent->spread = agent->ask * 0.01;
   agent->bid = agent->ask - agent->spread;
   agent->refresh = refresh_price;
   agent->set = set_price;
@@ -70,5 +80,7 @@ minmax(double * min_ask, double * max_bid, Agent * agents, int num_agents)
 
   *min_ask = min(asks, num_agents);
   *max_bid = max(bids, num_agents);
+  free(bids);
+  free(asks);
 }
 

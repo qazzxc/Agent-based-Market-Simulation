@@ -1,4 +1,3 @@
-
 #include "mpi.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,7 +48,7 @@ main(int argc, char ** argv)
       {
         new_price = (g_min_ask + g_max_bid) / 2;
         printf("%d %lf\n", t, new_price);
-        fflush(stdout);
+//        fflush(stdout);
       }
 
     MPI_Bcast(&new_price, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
@@ -72,7 +71,7 @@ init(int * argc, char ** argv, int * myid, int * numprocs)
   
   /* ローカルのエージェント数は、割り算で */
   N_AGENTS = ALL_N_AGENTS / *numprocs;
-
+  init_rand(myid);
   Agent * agents = malloc(sizeof(Agent) * N_AGENTS);
   init_agents(agents, N_AGENTS);
   return agents;
@@ -86,4 +85,3 @@ get_extreme_value(double * g_min_ask, double * g_max_bid, Agent * agents)
   MPI_Reduce(&l_max_bid, g_max_bid, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
   MPI_Reduce(&l_min_ask, g_min_ask, 1, MPI_DOUBLE, MPI_MIN, 0, MPI_COMM_WORLD);
 }
-

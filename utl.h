@@ -1,7 +1,7 @@
 #ifndef __UTL__
 #define __UTL__
 #include <stdio.h>
-#include <sys/time.h>
+#include<time.h>
 #include <math.h>
 #include "MT.h"
 
@@ -11,23 +11,39 @@
 #define putl(x) printf("%ld\n",x)
 #define putd(x) printf("%lf\n",x)
 
-double
-urand()
+double init_rand(int * myid)
 {
-  struct timeval tv;
-  gettimeofday(&tv, NULL);
-  init_genrand(tv.tv_usec);
-  return genrand_real1();
+struct timeval t0;
+gettimeofday(&t0, NULL);
+
+
+  init_genrand(t0.tv_usec*(*myid + 1));
+//  srand(tv.tv_usec * (*myid + 1));
+  return 0;
 }
 
-double
-grand()
+double urand()
 {
-  return pow(-2 * log(urand()), 0.5) * cos(2 * M_PI * urand());
+  return genrand_real3();
+  
 }
 
-double
-max(double * values, int size)
+double grand()
+{
+
+
+    return sqrt( -2.0 * log(urand() )) * sin( 2.0 * M_PI * urand() );
+
+/*  return 2*(urand()-0.5);
+
+    double tmp=((double)rand()+1.0)/((double)RAND_MAX+2.0);
+    
+    return 2*(tmp-0.5);
+*/
+
+}
+
+double max(double * values, int size)
 {
   double max;
   double * value;
@@ -37,8 +53,7 @@ max(double * values, int size)
   return max;
 }
 
-double
-min(double * values, int size)
+double min(double * values, int size)
 {
   double min = *values;
   double * value;
